@@ -9,6 +9,7 @@ Backend **NestJS** untuk aplikasi toko emas (Kubix). Menggunakan **PostgreSQL** 
 - [Instalasi](#instalasi)
 - [Konfigurasi](#konfigurasi)
 - [Menjalankan Aplikasi](#menjalankan-aplikasi)
+- [Docker](#docker)
 - [Testing](#testing)
 - [Migrasi Database](#migrasi-database)
 - [Dokumentasi API](#dokumentasi-api)
@@ -97,6 +98,26 @@ MAIL_FROM=noreply@example.com
   ```
 
 Aplikasi berjalan di `http://localhost:3000` (atau nilai `PORT` di `.env`).
+
+## Docker
+
+Compose hanya menjalankan aplikasi; database memakai yang sudah ada (atur `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_NAME` di `.env`).
+
+Pastikan file `.env` sudah ada (salin dari `.env.example`) dan berisi koneksi database yang benar.
+
+**Production:**
+
+```bash
+docker compose up -d
+```
+
+**Development (hot-reload):**
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+```
+
+App berjalan di `http://localhost:4000`.
 
 ## Testing
 

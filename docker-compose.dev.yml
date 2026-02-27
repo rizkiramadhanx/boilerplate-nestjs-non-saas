@@ -1,0 +1,25 @@
+# Development override: run app in dev mode with hot-reload.
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+# Pastikan .env berisi DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME (database yang sudah ada).
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "${PORT:-4000}:4000"
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      NODE_ENV: development
+      PORT: 4000
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:dev

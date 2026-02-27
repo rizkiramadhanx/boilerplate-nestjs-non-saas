@@ -1,0 +1,13 @@
+# Development: run with volume mount for hot-reload
+FROM node:22-alpine
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+EXPOSE 4000
+
+CMD ["npm", "run", "start:dev"]

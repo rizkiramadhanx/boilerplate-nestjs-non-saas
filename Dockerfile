@@ -1,22 +1,30 @@
-FROM node:18-alpine
+# Build stage
+FROM node:22-alpine AS builder
 
-# Set working directory
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
 COPY package*.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm install
-
-# Copy application source
 COPY . .
-
-# Build application
 RUN npm run build
 
-# Expose port
-EXPOSE 5000
+# Production stage
+FROM node:22-alpine AS production
 
-# Start application
-CMD ["npm", "run", "start:dev"]
+WORKDIR /usr/src/app
+
+ENV NODE_ENV=production
+ENV PORT=4000
+
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+COPY --from=builder /usr/src/app/dist ./dist
+
+RUN addgroup -g 1001 -S nodejs && adduser -S nestjs -u 1001 -G nodejs
+USER nestjs
+
+EXPOSE 4000
+
+CMD ["node", "dist/main.js"]

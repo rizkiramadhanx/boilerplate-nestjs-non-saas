@@ -1,0 +1,42 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check required secrets
+        run: |
+          if [ -z "${{ secrets.HOST }}" ]; then
+            echo "::error::Secret HOST is missing or empty."
+            echo "Tambahkan di Settings > Secrets and variables > Actions."
+            echo "Nama harus persis: HOST (huruf besar semua)."
+            exit 1
+          fi
+          if [ -z "${{ secrets.USERNAME }}" ]; then
+            echo "::error::Secret USERNAME is missing or empty."
+            exit 1
+          fi
+          if [ -z "${{ secrets.DEPLOY_PATH }}" ]; then
+            echo "::error::Secret DEPLOY_PATH is missing or empty."
+            echo "Contoh: production/boilerplate-nestjs-non-saas (path di VPS tempat repo di-clone)."
+            exit 1
+          fi
+          echo "Required secrets are set."
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT || 22 }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            cd ${{ secrets.DEPLOY_PATH }} && \
+            git pull && \
+            sudo docker compose build --no-cache && \
+            sudo docker compose up -d
