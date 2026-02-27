@@ -14,6 +14,7 @@ import { LogsModule } from './modules/logs/logs.module';
 @Module({
   imports: [
     LogsModule,
+    // kenapa
     AuthModule,
     UsersModule,
     ProductsModule,
