@@ -5,7 +5,7 @@ import { LogEntity } from './entities/log.entity';
 
 export interface CreateLogDto {
   action: string;
-  userId?: string;
+  userId?: number;
   status: string;
   statusCode?: number;
 }

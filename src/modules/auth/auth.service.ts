@@ -108,8 +108,7 @@ export class AuthService {
 
         const roleAdmin = this.roleRepository.create({
           name: 'Admin',
-          isAdmin: true,
-          modules: [].concat(...ACTION_ROLES.map((item) => item.actions)),
+          actions: [].concat(...ACTION_ROLES.map((item) => item.actions)),
         });
         await transactionalEntityManager.save(roleAdmin);
         newUser.role = roleAdmin;
@@ -223,7 +222,7 @@ export class AuthService {
     }
   }
 
-  async getUserProfile(id: string) {
+  async getUserProfile(id: number) {
     const user = await this.userRepository.findOne({
       where: { id },
       relations: ['role'],

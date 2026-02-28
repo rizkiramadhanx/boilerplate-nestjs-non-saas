@@ -9,38 +9,35 @@ import {
 } from 'typeorm';
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import { RoleEntity } from '../../roles/entities/role.entity';
+import { EventEntity } from '../../events/entities/event.entity';
 
 @Entity('users')
 export class UserEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   @Expose({ name: 'id' })
-  id: string;
-
-  @Column()
-  @Expose({ name: 'name' })
-  name: string;
+  id: number;
 
   @Column({ unique: true })
   @Expose({ name: 'email' })
   email: string;
 
-  @Column({ default: false, name: 'is_confirmed' })
+  @Column({ nullable: true })
+  @Expose({ name: 'name' })
+  name: string | null;
+
+  @Exclude()
+  @Column()
+  password: string;
+
+  @Column({ name: 'is_confirmed', default: false })
   @Expose({ name: 'is_confirmed' })
   isConfirmed: boolean;
 
-  @Exclude()
-  @Column({ nullable: true })
-  password: string;
-
-  @Column({ nullable: true })
-  @Expose({ name: 'picture' })
-  picture: string;
-
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   @Expose({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
 
@@ -52,5 +49,14 @@ export class UserEntity {
 
   @Expose({ name: 'role_id' })
   @Transform(({ obj }) => obj.role?.id ?? obj.roleId ?? null)
-  roleId?: string;
+  roleId?: number;
+
+  @ManyToOne(() => EventEntity, (event) => event.users, { nullable: true })
+  @JoinColumn({ name: 'event_id' })
+  @Exclude()
+  event?: EventEntity | null;
+
+  @Expose({ name: 'event_id' })
+  @Transform(({ obj }) => obj.event?.id ?? obj.eventId ?? null)
+  eventId?: number | null;
 }

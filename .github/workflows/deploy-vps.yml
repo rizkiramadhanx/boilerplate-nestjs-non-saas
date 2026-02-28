@@ -21,14 +21,30 @@ jobs:
             echo "::error::Secret USERNAME is missing or empty."
             exit 1
           fi
-          if [ -z "${{ secrets.DEPLOY_PATH }}" ]; then
-            echo "::error::Secret DEPLOY_PATH is missing or empty."
-            echo "Contoh: production/boilerplate-nestjs-non-saas (path di VPS tempat repo di-clone)."
-            exit 1
-          fi
           echo "Required secrets are set."
 
       - name: Deploy to VPS
+        id: deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT || 22 }}
+          password: ${{ secrets.PASSWORD }}
+          script_timeout: 10m
+          script: |
+            set -e
+            cd /home/ubuntu/production/gantangan-service || { echo "::error::Path tidak ditemukan: /home/ubuntu/production/gantangan-service"; exit 1; }
+            git pull
+            sudo docker compose build --no-cache
+            sudo docker compose up -d
+            sleep 5
+            sudo docker compose ps
+            echo "--- Log app (10 baris terakhir) ---"
+            sudo docker compose logs --tail=10 app || true
+
+      - name: Show logs on failure
+        if: failure()
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -36,7 +52,4 @@ jobs:
           port: ${{ secrets.PORT || 22 }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            cd ${{ secrets.DEPLOY_PATH }} && \
-            git pull && \
-            sudo docker compose build --no-cache && \
-            sudo docker compose up -d
+            cd /home/ubuntu/production/gantangan-service 2>/dev/null && echo "=== docker compose ps ===" && sudo docker compose ps && echo "=== docker compose logs app (last 50) ===" && sudo docker compose logs --tail=50 app || echo "Tidak bisa ambil log (path salah atau docker belum jalan)."

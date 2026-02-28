@@ -5,6 +5,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -119,7 +120,7 @@ export class RolesController {
   @Get(':roleId')
   @Permissions('role:read')
   async detail(
-    @Param('roleId') roleId: string,
+    @Param('roleId', ParseIntPipe) roleId: number,
     @CurrentUser() currentUser: CurrentUserType,
     @Res({ passthrough: true }) res: Response,
   ) {
@@ -149,7 +150,7 @@ export class RolesController {
   @Patch(':roleId')
   @Permissions('role:update')
   async update(
-    @Param('roleId') roleId: string,
+    @Param('roleId', ParseIntPipe) roleId: number,
     @Body() dto: UpdateRoleDto,
     @CurrentUser() currentUser: CurrentUserType,
     @Res({ passthrough: true }) res: Response,
@@ -180,7 +181,7 @@ export class RolesController {
   @Delete(':roleId')
   @Permissions('role:delete')
   async remove(
-    @Param('roleId') roleId: string,
+    @Param('roleId', ParseIntPipe) roleId: number,
     @CurrentUser() currentUser: CurrentUserType,
     @Res({ passthrough: true }) res: Response,
   ) {

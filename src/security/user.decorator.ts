@@ -1,9 +1,9 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export type CurrentUserType = {
-  id: string;
+  id: number;
   email?: string;
-  role?: { isAdmin?: boolean; modules?: string[] } | null;
+  role?: { id: number; name: string; actions: string[] } | null;
 };
 
 export const CurrentUser = createParamDecorator<

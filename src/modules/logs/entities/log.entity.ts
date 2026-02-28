@@ -15,14 +15,18 @@ export class LogEntity {
   @Column({ length: 255 })
   action: string;
 
-  @Column({ name: 'user_id', type: 'uuid', nullable: true })
-  userId: string | null;
+  @Column({ name: 'user_id', type: 'int', nullable: true })
+  userId: number | null;
 
   @ManyToOne(() => UserEntity, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity | null;
 
-  @Column({ name: 'timestamp', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    name: 'timestamp',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   timestamp: Date;
 
   @Column({ length: 50 })

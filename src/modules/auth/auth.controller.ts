@@ -118,7 +118,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@Req() req: Request, @Res() res: Response) {
-    const { id } = req.user as { id: string };
+    const { id } = req.user as { id: number };
 
     try {
       const userData = await this.authService.getUserProfile(id);

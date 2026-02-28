@@ -11,21 +11,17 @@ import { Exclude, Expose } from 'class-transformer';
 
 @Entity('roles')
 export class RoleEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   @Expose({ name: 'id' })
-  id: string;
+  id: number;
 
-  @Column({ length: 100 })
+  @Column({ length: 255 })
   @Expose({ name: 'name' })
   name: string;
 
-  @Column({ type: 'boolean', default: false, name: 'is_admin' })
-  @Expose({ name: 'is_admin' })
-  isAdmin: boolean;
-
-  @Column({ type: 'jsonb', nullable: false, default: () => "'[]'" })
-  @Expose({ name: 'modules' })
-  modules: string[];
+  @Column({ type: 'simple-array', nullable: true, default: '' })
+  @Expose({ name: 'actions' })
+  actions: string[];
 
   @OneToMany(() => UserEntity, (user) => user.role)
   @Exclude()

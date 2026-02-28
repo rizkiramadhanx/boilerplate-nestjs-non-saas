@@ -14,7 +14,7 @@ import { UserEntity } from '../../users/entities/user.entity';
 // Relations are loaded via string names in findOne options
 
 export type JwtPayload = {
-  sub: string;
+  sub: number;
   email: string;
   role: number;
 };
@@ -49,9 +49,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
           isConfirmed: true,
           role: {
             id: true,
-            isAdmin: true,
             name: true,
-            modules: true,
+            actions: true,
           },
         },
         relations: ['role'],

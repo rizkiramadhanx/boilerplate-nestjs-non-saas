@@ -9,7 +9,7 @@ import { UserEntity } from '../../users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 
 export type JwtPayload = {
-  sub: string;
+  sub: number;
   email: string;
   role: number;
 };

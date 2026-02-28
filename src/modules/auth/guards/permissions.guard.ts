@@ -22,11 +22,10 @@ export class PermissionsGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const user = req.user as any;
 
-    // const isAdmin = !!user?.role?.isAdmin;
-    // if (isAdmin) return true;
+    if (user?.role?.name === 'Admin') return true;
 
-    const modules: string[] = user?.role?.modules || [];
-    const has = required.every((p) => modules.includes(p));
+    const actions: string[] = user?.role?.actions || [];
+    const has = required.every((p) => actions.includes(p));
 
     if (!has)
       throw new ForbiddenException(

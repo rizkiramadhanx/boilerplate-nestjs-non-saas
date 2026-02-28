@@ -3,7 +3,6 @@ import {
   ArrayNotEmpty,
   ArrayUnique,
   IsArray,
-  IsBoolean,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -13,45 +12,38 @@ import {
 export class CreateRoleDto {
   @IsString()
   @IsNotEmpty()
-  @MaxLength(100)
+  @MaxLength(255)
   name: string;
 
   @IsArray()
   @ArrayUnique()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  modules: string[];
+  actions: string[];
 }
 
 export class UpdateRoleDto {
   @IsString()
   @IsOptional()
-  @MaxLength(100)
+  @MaxLength(255)
   name?: string;
-
-  @IsBoolean()
-  @IsOptional()
-  isAdmin?: boolean;
 
   @IsArray()
   @IsString({ each: true })
   @ArrayUnique()
   @IsOptional()
-  modules?: string[];
+  actions?: string[];
 }
 
 export class RoleResponseDto {
   @Expose({ name: 'id' })
-  id: string;
+  id: number;
 
   @Expose({ name: 'name' })
   name: string;
 
-  @Expose({ name: 'is_admin' })
-  isAdmin: boolean;
-
-  @Expose({ name: 'modules' })
-  modules: string[];
+  @Expose({ name: 'actions' })
+  actions: string[];
 
   @Expose({ name: 'created_at' })
   createdAt: Date;

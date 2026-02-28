@@ -119,6 +119,22 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up
 
 App berjalan di `http://localhost:4000`.
 
+### Deploy ke VPS (GitHub Actions)
+
+Set secret di repo: `HOST`, `USERNAME`, `PASSWORD`, `DEPLOY_PATH` (opsional: `PORT` untuk SSH).
+
+**Kalau di VPS "gabisa", cek:**
+
+1. **DEPLOY_PATH** — Harus path **absolut** ke folder repo di VPS, contoh: `/home/ubuntu/production/boilerplate-nestjs-non-saas`. Bukan path relatif seperti `production/app` kalau SSH tidak start di home.
+2. **.env di VPS** — Di folder project harus ada file `.env` (DB_*, JWT_*, dll). Tanpa ini container bisa crash.
+3. **Database dari container** — App jalan di Docker; `DB_HOST=localhost` di dalam container = container itu sendiri. Kalau database jalan di **VPS (host)**:
+   - Linux: `DB_HOST=172.17.0.1` atau IP host.
+   - Atau jalankan app tanpa Docker di VPS (`npm run start:prod`) dan DB_HOST=localhost boleh.
+4. **Docker & sudo** — User SSH harus bisa jalankan `sudo docker compose` (user di grup `docker` atau sudoers).
+5. **Port 4000** — Pastikan tidak dipakai proses lain; buka firewall: `sudo ufw allow 4000` (kalau pakai ufw).
+
+Setelah deploy, kalau workflow gagal, buka run yang gagal → step **"Show logs on failure"** untuk lihat log container.
+
 ## Testing
 
 - Menjalankan semua unit test:

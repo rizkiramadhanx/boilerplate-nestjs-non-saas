@@ -1,12 +1,13 @@
 import {
   IsEmail,
+  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
   MinLength,
   IsStrongPassword,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { Match } from '../../../common/decorators/confirmPassword.decorator';
 
 export class CreateUserDto {
@@ -28,13 +29,10 @@ export class CreateUserDto {
   @Match('password', { message: 'Passwords do not match' })
   confirmPassword: string;
 
-  @IsUUID()
+  @IsInt()
   @IsOptional()
-  role_id?: string;
-
-  @IsString()
-  @IsOptional()
-  picture?: string;
+  @Type(() => Number)
+  role_id?: number;
 }
 
 export class UpdateUserDto {
@@ -51,18 +49,15 @@ export class UpdateUserDto {
   @MinLength(8)
   password?: string;
 
-  @IsUUID()
+  @IsInt()
   @IsOptional()
-  role_id?: string;
-
-  @IsString()
-  @IsOptional()
-  picture?: string;
+  @Type(() => Number)
+  role_id?: number;
 }
 
 export class UserResponseDto {
-  @IsUUID()
-  id: string;
+  @IsInt()
+  id: number;
 
   @IsString()
   name: string;
@@ -70,13 +65,10 @@ export class UserResponseDto {
   @IsEmail()
   email: string;
 
-  @IsUUID()
+  @IsInt()
   @IsOptional()
-  role_id?: string;
-
-  @IsString()
-  @IsOptional()
-  picture?: string;
+  @Type(() => Number)
+  role_id?: number;
 
   @IsString()
   createdAt: string;
@@ -105,13 +97,10 @@ export class CreateUserManualUserDto {
   @Match('password', { message: 'Passwords do not match' })
   confirmPassword: string;
 
-  @IsUUID()
+  @IsInt()
   @IsOptional()
-  role_id?: string;
-
-  @IsString()
-  @IsOptional()
-  picture?: string;
+  @Type(() => Number)
+  role_id?: number;
 }
 
 export class LoginDto {

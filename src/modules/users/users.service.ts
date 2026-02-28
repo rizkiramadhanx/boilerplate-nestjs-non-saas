@@ -31,11 +31,10 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
     const newUser = this.userRepository.create({
-      name: createUserDto.name,
+      name: createUserDto.name ?? null,
       email: createUserDto.email,
       password: hashedPassword,
-      picture: createUserDto.picture,
-      role: createUserDto.role_id ? { id: createUserDto.role_id } : null,
+      role: createUserDto.role_id ? { id: createUserDto.role_id } : undefined,
     });
 
     const savedUser = await this.userRepository.save(newUser);
@@ -45,7 +44,7 @@ export class UserService {
     }) as Record<string, unknown>;
   }
 
-  async getUserById(id: string) {
+  async getUserById(id: number) {
     const user = await this.userRepository.findOne({
       where: { id },
       relations: ['role'],
@@ -61,7 +60,7 @@ export class UserService {
     }) as Record<string, unknown>;
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+  async updateUser(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.findOne({
       where: { id },
     });
@@ -82,7 +81,6 @@ export class UserService {
     if (updateUserDto.name) user.name = updateUserDto.name;
     if (updateUserDto.email) user.email = updateUserDto.email;
     if (updateUserDto.password) user.password = updateUserDto.password;
-    if (updateUserDto.picture) user.picture = updateUserDto.picture;
 
     const updatedUser = await this.userRepository.save(user);
     const instance = plainToInstance(UserEntity, updatedUser);
@@ -91,7 +89,7 @@ export class UserService {
     }) as Record<string, unknown>;
   }
 
-  async deleteUser(id: string) {
+  async deleteUser(id: number) {
     const user = await this.userRepository.findOne({
       where: { id },
     });
@@ -110,7 +108,6 @@ export class UserService {
 
     if (user.name) userExists.name = user.name;
     if (user.email) userExists.email = user.email;
-    if (user.picture !== undefined) userExists.picture = user.picture;
     if (user.password) {
       userExists.password = await bcrypt.hash(user.password, 10);
     }
@@ -141,13 +138,12 @@ export class UserService {
         id: true,
         name: true,
         email: true,
-        picture: true,
         createdAt: true,
         updatedAt: true,
         role: {
           id: true,
-          isAdmin: true,
           name: true,
+          actions: true,
         },
       },
       where: whereCondition,

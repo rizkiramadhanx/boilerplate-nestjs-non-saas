@@ -63,7 +63,7 @@ export class RolesService {
     };
   }
 
-  async detailRole(roleId: string) {
+  async detailRole(roleId: number) {
     const role = await this.roleRepo.findOne({
       where: { id: roleId },
     });
@@ -77,14 +77,15 @@ export class RolesService {
     >;
   }
 
-  async updateRole(roleId: string, dto: UpdateRoleDto) {
+  async updateRole(roleId: number, dto: UpdateRoleDto) {
     const role = await this.roleRepo.findOne({
       where: { id: roleId },
     });
 
     if (!role) throw new NotFoundException('Role not found');
 
-    if (role.isAdmin) throw new ForbiddenException('Admin tidak boleh diganti');
+    if (role.name === 'Admin')
+      throw new ForbiddenException('Admin tidak boleh diganti');
 
     Object.assign(role, dto);
     const updatedRole = await this.roleRepo.save(role);
@@ -96,13 +97,14 @@ export class RolesService {
     }) as Record<string, unknown>;
   }
 
-  async deleteRole(roleId: string) {
+  async deleteRole(roleId: number) {
     const role = await this.roleRepo.findOne({
       where: { id: roleId },
     });
 
     if (!role) throw new NotFoundException('Role not found');
-    if (role.isAdmin) throw new ForbiddenException('Admin tidak boleh dihapus');
+    if (role.name === 'Admin')
+      throw new ForbiddenException('Admin tidak boleh dihapus');
 
     await this.roleRepo.delete(roleId);
     return true;
